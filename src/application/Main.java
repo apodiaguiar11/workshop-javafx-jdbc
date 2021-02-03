@@ -10,6 +10,8 @@ import javafx.stage.Stage;
 
 public class Main extends Application {
 	
+	private static Scene mainScene;
+	
 	@Override
 	public void start(Stage primaryStage) {
 		//stage significa palco
@@ -22,7 +24,7 @@ public class Main extends Application {
 			scrollPane.setFitToWidth(true);
 			
 			//Criando a cena
-			Scene mainScene = new Scene(scrollPane);
+			mainScene = new Scene(scrollPane);
 			
 			//Setando a cena mainScene como a cena principal
 			primaryStage.setScene(mainScene);
@@ -38,6 +40,10 @@ public class Main extends Application {
 		}
 	}
 
+	public static Scene getMainScene() {
+		return mainScene;
+	}
+	
 	public static void main(String[] args) {
 		launch(args);
 	}
