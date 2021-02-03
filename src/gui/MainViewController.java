@@ -36,13 +36,18 @@ public class MainViewController implements Initializable {
 	
 	@FXML
 	public void onMenuItemDepartmentAction() {
-		System.out.println("onMenuItemDepartmentAction");
+		
+		//Chamando o método que vai abrir a outra tela quando esse comando for acionado
+		loadView("/gui/DepartmentList.fxml");
+		
 	}
 	
 	@FXML
 	public void onMenuItemAboutAction() {
+		
 		//Chamando o método que vai abrir a outra tela quando esse comando for acionado
-		loadView("/gui/About.fxml");		
+		loadView("/gui/About.fxml");
+		
 	}
 	
 	
