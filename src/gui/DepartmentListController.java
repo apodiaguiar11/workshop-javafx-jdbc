@@ -1,18 +1,27 @@
 package gui;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 
 import application.Main;
+import gui.util.Alerts;
+import gui.util.Utils;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Scene;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.Pane;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import model.entities.Department;
 import model.services.DepartmentService;
@@ -45,8 +54,9 @@ public class DepartmentListController implements Initializable {
 	private ObservableList<Department> obsList;
 	
 	@FXML
-	public void onBtNewAction() {
-		System.out.println("onBtNewAction");
+	public void onBtNewAction(ActionEvent event) {
+		Stage parentStage = Utils.currentStage(event);
+		createDialogForm("/gui/DepartmentForm.fxml", parentStage);
 	}
 	
 	public void setDepartmentService(DepartmentService service) {
@@ -96,5 +106,44 @@ public class DepartmentListController implements Initializable {
 		//Carregar os itens na TableView e mostrar na tela
 		tableViewDepartment.setItems(obsList);
 	}
+	
+	private void createDialogForm(String absoluteName, Stage parentStage) {
+		
+		//Lógica para abrir a janelinha de formulário
+		try {
+			
+			FXMLLoader loader = new FXMLLoader(getClass().getResource(absoluteName));
+			Pane pane = loader.load();
+			
+			//Quando quero mostrar uma janelinha na frente de um Stage (um palco)
+			//É preciso criar outro palco, pois será um palco em cima de outro
+
+			Stage dialogStage = new Stage();
+			
+			//Título da janelinha
+			dialogStage.setTitle(" Enter Department Data ");
+			
+			//Determinando quem será a cena
+			dialogStage.setScene(new Scene(pane));
+			
+			//Fazer com que a janelinha não seja redimensionada
+			dialogStage.setResizable(false);
+			
+			//Determinar quem é o Stage pai dessa janelinha
+			dialogStage.initOwner(parentStage);
+			
+			//Determina se a janela vai ser modal ou vai ter outro comportamento
+			//Assim, a janelinha vai ficar travada para que não possa acessar outra coisa
+			//enquanto essa janelinha estiver aberta
+			dialogStage.initModality(Modality.WINDOW_MODAL);
+			
+			dialogStage.showAndWait();
+			
+		}
+		catch(IOException e) {
+			Alerts.showAlert("IO Exception", "Error loading view", e.getMessage(), AlertType.ERROR);
+		}
+	}
+	
 	
 }
