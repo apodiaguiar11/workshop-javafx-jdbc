@@ -117,9 +117,17 @@ public class DepartmentListController implements Initializable {
 			FXMLLoader loader = new FXMLLoader(getClass().getResource(absoluteName));
 			Pane pane = loader.load();
 			
-			//Pegando o controlador da tela que acabei de carregar 
+			//Pegando o controlador da tela que acabei de carregar 			
 			DepartmentFormController controller = loader.getController();
+			
+			//Quando pressiono o button new, passo um obj vazio
+			//por isso, não mostra nada no TextField
+			//Até por é óbvio, pois estou criando algo
+			//Injetando um Department
 			controller.setDepartment(obj);
+			
+			//Injetando um DepartmentService
+			controller.setDepartmentService(new DepartmentService());
 			controller.updateFormData();
 			
 			//Quando quero mostrar uma janelinha na frente de um Stage (um palco)
