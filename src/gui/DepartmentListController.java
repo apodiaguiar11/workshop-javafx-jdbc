@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 import application.Main;
+import gui.listeners.DataChangeListener;
 import gui.util.Alerts;
 import gui.util.Utils;
 import javafx.collections.FXCollections;
@@ -26,7 +27,7 @@ import javafx.stage.Stage;
 import model.entities.Department;
 import model.services.DepartmentService;
 
-public class DepartmentListController implements Initializable {
+public class DepartmentListController implements Initializable, DataChangeListener {
 
 	
 	private DepartmentService service;
@@ -128,7 +129,14 @@ public class DepartmentListController implements Initializable {
 			
 			//Injetando um DepartmentService
 			controller.setDepartmentService(new DepartmentService());
+			
+			//Inscrever para escutar o evento do onDataChange
+			//Aqui inicia o padrão Observer (Primeiro passo)
+			//Está mandando um objeto do tipo dele mesmo
+			controller.subscribeDataChangeListener(this);
+			
 			controller.updateFormData();
+						
 			
 			//Quando quero mostrar uma janelinha na frente de um Stage (um palco)
 			//É preciso criar outro palco, pois será um palco em cima de outro			
@@ -157,6 +165,16 @@ public class DepartmentListController implements Initializable {
 		catch(IOException e) {
 			Alerts.showAlert("IO Exception", "Error loading view", e.getMessage(), AlertType.ERROR);
 		}
+	}
+
+	@Override
+	public void onDataChanged() {
+		//Quinto passo do padrão Observer
+		//Antes, da janelinha fechar, o método notifyDataChangeListeners(), vai chamar
+		//esse método, que vai ter a responsabilidade de atualizar a tabela com o novo valor inserido
+		//Só depois de executar esse método que a janelinha será fechada (Pelo outro método que está dentro
+		//do método onBtSaveAction da classe DepartmentFormController)
+		updateTableView();		
 	}
 	
 	

@@ -1,9 +1,12 @@
 package gui;
 
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 
 import db.DbException;
+import gui.listeners.DataChangeListener;
 import gui.util.Alerts;
 import gui.util.Constraints;
 import gui.util.Utils;
@@ -24,6 +27,8 @@ public class DepartmentFormController implements Initializable {
 	
 	private DepartmentService service;
 	
+	//Como se fosse uma lista de observadores
+	private List<DataChangeListener> dataChangeListeners = new ArrayList<>();
 	
 	@FXML
 	private TextField txtId;
@@ -48,6 +53,12 @@ public class DepartmentFormController implements Initializable {
 		this.service = service;
 	}
 	
+	public void subscribeDataChangeListener(DataChangeListener listener) {
+		//Adicionando o observador do evento dentro da lista 
+		//Segundo passo do padrão Observer
+		dataChangeListeners.add(listener);
+	}
+	
 	@FXML
 	public void onBtSaveAction(ActionEvent event) {
 		
@@ -67,6 +78,10 @@ public class DepartmentFormController implements Initializable {
 			//Salvando no Banco de Dados
 			service.saveOrUpdate(entity);
 			
+			//Método para executar o método da interface DataChangeListener
+			//Terceiro passo do padrão Observer
+			notifyDataChangeListeners();
+			
 			//Para fechar a janela, depois de salvar no Banco de dados
 			Utils.currentStage(event).close();
 			
@@ -79,6 +94,18 @@ public class DepartmentFormController implements Initializable {
 		
 	}
 	
+	private void notifyDataChangeListeners() {
+		
+		//Quarto passo do padrão Observer
+		//Vai notificar ao observador (a classe DepartmentListController) que está dentro da lista, 
+		//que houve uma alteração, pois no momento que esse método é chamado,
+		//o conteúdo digitado pelo usuário já foi salvo no Banco de dados
+		for(DataChangeListener listener: dataChangeListeners) {
+			listener.onDataChanged();
+		}
+		
+	}
+
 	//Método para pegar as informações que estão no TextField e
 	//instanciar um Department. 
 	private Department getFormData() {		
