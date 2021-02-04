@@ -56,7 +56,8 @@ public class DepartmentListController implements Initializable {
 	@FXML
 	public void onBtNewAction(ActionEvent event) {
 		Stage parentStage = Utils.currentStage(event);
-		createDialogForm("/gui/DepartmentForm.fxml", parentStage);
+		Department obj = new Department();
+		createDialogForm(obj,"/gui/DepartmentForm.fxml", parentStage);
 	}
 	
 	public void setDepartmentService(DepartmentService service) {
@@ -107,17 +108,22 @@ public class DepartmentListController implements Initializable {
 		tableViewDepartment.setItems(obsList);
 	}
 	
-	private void createDialogForm(String absoluteName, Stage parentStage) {
+	private void createDialogForm(Department obj, String absoluteName, Stage parentStage) {
 		
 		//Lógica para abrir a janelinha de formulário
 		try {
 			
+			//Carregando a tela
 			FXMLLoader loader = new FXMLLoader(getClass().getResource(absoluteName));
 			Pane pane = loader.load();
 			
+			//Pegando o controlador da tela que acabei de carregar 
+			DepartmentFormController controller = loader.getController();
+			controller.setDepartment(obj);
+			controller.updateFormData();
+			
 			//Quando quero mostrar uma janelinha na frente de um Stage (um palco)
-			//É preciso criar outro palco, pois será um palco em cima de outro
-
+			//É preciso criar outro palco, pois será um palco em cima de outro			
 			Stage dialogStage = new Stage();
 			
 			//Título da janelinha
