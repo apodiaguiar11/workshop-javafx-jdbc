@@ -31,6 +31,7 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import model.entities.Seller;
+import model.services.DepartmentService;
 import model.services.SellerService;
 
 public class SellerListController implements Initializable, DataChangeListener {
@@ -164,8 +165,11 @@ public class SellerListController implements Initializable, DataChangeListener {
 			controller.setSeller(obj);
 
 			// Injetando um SellerService
-			controller.setSellerService(new SellerService());
-
+			controller.setServices(new SellerService(), new DepartmentService());
+			
+			//Carregando os departamentos
+			controller.loadAssociatedObjects();
+			
 			// Inscrever para escutar o evento do onDataChange
 			// Aqui inicia o padrão Observer (Primeiro passo)
 			// Está mandando um objeto do tipo dele mesmo
@@ -197,6 +201,7 @@ public class SellerListController implements Initializable, DataChangeListener {
 			dialogStage.showAndWait();
 
 		} catch (IOException e) {
+			e.printStackTrace();
 			Alerts.showAlert("IO Exception", "Error loading view", e.getMessage(), AlertType.ERROR);
 		}
 	}
